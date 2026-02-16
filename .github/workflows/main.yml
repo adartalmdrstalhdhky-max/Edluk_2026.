@@ -13,7 +13,7 @@ jobs:
       
       - name: Create Global Project
         run: |
-          # 1. إنشاء المشروع الأساسي
+          # 1. إنشاء المشروع الأساسي النظيف
           flutter create --project-name edluk_app --org com.essam.edluk .
           
           # 2. توليد كود التطبيق الاحترافي (المعلم والذكاء الاصطناعي)
@@ -27,7 +27,10 @@ jobs:
             Widget build(BuildContext context) {
               return MaterialApp(
                 title: 'أدلك - Edluk',
-                theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+                  useMaterial3: true,
+                ),
                 home: HomePage(),
                 debugShowCheckedModeBanner: false,
               );
@@ -38,16 +41,27 @@ jobs:
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('منارة الأجيال الرقمية'), centerTitle: true),
+                appBar: AppBar(
+                  title: Text('منارة الأجيال الرقمية', style: TextStyle(color: Colors.white)),
+                  backgroundColor: Colors.indigo,
+                  centerTitle: true,
+                ),
                 body: GridView.count(
                   padding: EdgeInsets.all(16),
                   crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
                   children: [
                     _buildCard(context, 'المعلم الذكي', Icons.psychology, Colors.orange),
                     _buildCard(context, 'الدروس التفاعلية', Icons.school, Colors.blue),
                     _buildCard(context, 'المكتبة الرقمية', Icons.menu_book, Colors.green),
                     _buildCard(context, 'تقارير الأداء', Icons.analytics, Colors.purple),
                   ],
+                ),
+                floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () {},
+                  label: Text('اسأل جيميني'),
+                  icon: Icon(Icons.auto_awesome),
                 ),
               );
             }
@@ -56,7 +70,9 @@ jobs:
               return Card(
                 elevation: 4,
                 child: InkWell(
-                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('قريباً: \$title'))),
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('نظام \$title قيد التشغيل التجريبي')),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -73,8 +89,9 @@ jobs:
 
       - name: Build Historical APK
         run: |
+          # بناء النسخة بدون الأمر المسبب للخطأ
           flutter pub get
-          flutter build apk --release --no-sound-null-safety
+          flutter build apk --release
           
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
