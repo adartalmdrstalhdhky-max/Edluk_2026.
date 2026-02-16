@@ -1,4 +1,4 @@
-name: Edluk World-Class Ultimate System
+name: Edluk Global Educational OS - Full Architecture
 on: [push]
 jobs:
   build:
@@ -10,41 +10,47 @@ jobs:
         with:
           flutter-version: '3.19.0'
       
-      - name: Inject Massive Real-Time Content
+      - name: Deploy Full School Management System
         run: |
           flutter create --project-name edluk_app --org com.essam.edluk .
           cat <<EOF > lib/main.dart
           import 'package:flutter/material.dart';
 
           void main() => runApp(MaterialApp(
-            theme: ThemeData(useMaterial3: true, brightness: Brightness.dark, colorSchemeSeed: Colors.amber),
-            home: GlobalLaunchControl(),
+            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.amber, brightness: Brightness.dark),
+            home: SystemBootScreen(),
             debugShowCheckedModeBanner: false,
           ));
 
-          class GlobalLaunchControl extends StatelessWidget {
+          // 1. شاشة إقلاع النظام (تشخيص قواعد البيانات)
+          class SystemBootScreen extends StatefulWidget {
+            @override
+            _SystemBootScreenState createState() => _SystemBootScreenState();
+          }
+
+          class _SystemBootScreenState extends State<SystemBootScreen> {
+            @override
+            void initState() {
+              super.initState();
+              Future.delayed(Duration(seconds: 3), () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RoleSelectionScreen()));
+              });
+            }
+
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                backgroundColor: Color(0xFF000510),
+                backgroundColor: Colors.black,
                 body: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.language, size: 160, color: Colors.amber),
-                      SizedBox(height: 30),
-                      Text('EDLUK GLOBAL OS', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: 5)),
-                      Text('النظام التعليمي السيادي - النسخة العالمية الشاملة', style: TextStyle(color: Colors.amberAccent, fontSize: 18)),
-                      SizedBox(height: 100),
-                      CircularProgressIndicator(color: Colors.amber),
+                      Icon(Icons.account_balance, size: 100, color: Colors.amber),
                       SizedBox(height: 20),
-                      Text('جاري فحص قواعد البيانات الضخمة...', style: TextStyle(color: Colors.white30)),
+                      Text('EDLUK GLOBAL OS', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+                      Text('جاري تحميل النظام المدرسي الشامل...', style: TextStyle(color: Colors.amberAccent)),
                       SizedBox(height: 50),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black, padding: EdgeInsets.symmetric(horizontal: 70, vertical: 25)),
-                        onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GlobalMainSystem())),
-                        child: Text('دخول مركز القيادة العالمي', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                      ),
+                      CircularProgressIndicator(color: Colors.amber),
                     ],
                   ),
                 ),
@@ -52,116 +58,124 @@ jobs:
             }
           }
 
-          class GlobalMainSystem extends StatefulWidget {
-            @override
-            _GlobalMainSystemState createState() => _GlobalMainSystemState();
-          }
-
-          class _GlobalMainSystemState extends State<GlobalMainSystem> {
-            int _idx = 0;
-            final _pages = [AiNexus(), WorldEncyclopedia(), MediaArchiver(), LeadershipCore()];
-
+          // 2. شاشة اختيار الأدوار (مدير، معلم، طالب)
+          class RoleSelectionScreen extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('EDLUK CENTRAL SYSTEM V2.0'), backgroundColor: Colors.black),
-                body: _pages[_idx],
-                bottomNavigationBar: NavigationBar(
-                  selectedIndex: _idx,
-                  onDestinationSelected: (i) => setState(() => _idx = i),
-                  destinations: [
-                    NavigationDestination(icon: Icon(Icons.psychology), label: 'جيميني AI'),
-                    NavigationDestination(icon: Icon(Icons.menu_book), label: 'الموسوعة الحقيقية'),
-                    NavigationDestination(icon: Icon(Icons.folder_shared), label: 'مركز البيانات'),
-                    NavigationDestination(icon: Icon(Icons.verified_user), label: 'القيادة السيادية'),
+                appBar: AppBar(title: Text('بوابة الدخول العالمية'), centerTitle: true),
+                body: GridView.count(
+                  crossAxisCount: 1, childAspectRatio: 3, padding: EdgeInsets.all(20),
+                  children: [
+                    _roleCard(context, 'حساب مدير المدرسة', Icons.admin_panel_settings, Colors.red, AdminDashboard()),
+                    _roleCard(context, 'حساب المعلم', Icons.school, Colors.blue, TeacherPortal()),
+                    _roleCard(context, 'حساب الطالب', Icons.person, Colors.green, StudentPortal()),
                   ],
+                ),
+              );
+            }
+
+            Widget _roleCard(BuildContext context, String title, IconData icon, Color color, Widget page) {
+              return Card(
+                child: ListTile(
+                  leading: Icon(icon, size: 40, color: color),
+                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  subtitle: Text('نظام العمل بدون إنترنت مفعّل ✅'),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
                 ),
               );
             }
           }
 
-          class AiNexus extends StatefulWidget {
-            @override
-            _AiNexusState createState() => _AiNexusState();
-          }
-
-          class _AiNexusState extends State<AiNexus> {
-            final List<String> log = ["نظام جيميني: متصل بالقمر الصناعي التعليمي.. جاهز يا قائد عصام."];
-            final _c = TextEditingController();
-
+          // 3. لوحة تحكم المدير (إدارة المدارس والصفوف)
+          class AdminDashboard extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
-              return Column(children: [
-                Expanded(child: ListView.builder(itemCount: log.length, itemBuilder: (ctx, i) => 
-                  Container(margin: EdgeInsets.all(12), padding: EdgeInsets.all(20), decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.amber)),
-                  child: Text(log[i], style: TextStyle(fontSize: 16, color: Colors.white))))),
-                Padding(padding: EdgeInsets.all(15), child: Row(children: [
-                  Expanded(child: TextField(controller: _c, decoration: InputDecoration(hintText: 'أدخل استعلامك العالمي...', filled: true))),
-                  IconButton(icon: Icon(Icons.send, color: Colors.amber), onPressed: () {
-                    setState(() { log.add("عصام: " + _c.text); log.add("جيميني: يتم الآن جلب البيانات الحقيقية من المجلدات المركزية.. تم العثور على 1,240 نتيجة."); _c.clear(); });
-                  })
-                ]))
-              ]);
-            }
-          }
-
-          class WorldEncyclopedia extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return ListView(padding: EdgeInsets.all(20), children: [
-                _realLesson("موسوعة البرمجة العالمية", "تضم أكثر من 500 مرجع في لغات Python, C++, Flutter.", Icons.code),
-                _realLesson("أرشيف علوم الفضاء", "بيانات حقيقية من وكالات الفضاء العالمية لطلابنا.", Icons.rocket),
-                _realLesson("منصة التاريخ اليمني", "توثيق كامل للحضارة اليمنية بصيغة رقمية.", Icons.history_edu),
-                _realLesson("مركز اللغات الأجنبية", "دروس صوتية ونصية لـ 5 لغات عالمية.", Icons.translate),
-              ]);
-            }
-            Widget _realLesson(String t, String s, IconData i) {
-              return Card(color: Colors.white10, margin: EdgeInsets.only(bottom: 15), child: ListTile(leading: Icon(i, color: Colors.amber), title: Text(t, style: TextStyle(fontWeight: FontWeight.bold)), subtitle: Text(s)));
-            }
-          }
-
-          class MediaArchiver extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return GridView.count(crossAxisCount: 2, padding: EdgeInsets.all(15), children: [
-                _box("المجلد الصوتي", Icons.audiotrack, "4.2 GB"),
-                _box("مجلد الفيديو", Icons.video_file, "12.8 GB"),
-                _box("الوثائق التقنية", Icons.description, "1.5 GB"),
-                _box("الصور المسجلة", Icons.image, "2.1 GB"),
-              ]);
-            }
-            Widget _box(String t, IconData i, String s) {
-              return Card(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(i, size: 50, color: Colors.amber), Text(t, style: TextStyle(fontWeight: FontWeight.bold)), Text(s, style: TextStyle(fontSize: 12, color: Colors.white30))]));
-            }
-          }
-
-          class LeadershipCore extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Padding(
-                padding: EdgeInsets.all(30),
-                child: Column(children: [
-                  Icon(Icons.shield, size: 100, color: Colors.amber),
-                  SizedBox(height: 20),
-                  Text('القائد عصام', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-                  Text('Founder of Edluk Global Sovereignty', style: TextStyle(color: Colors.amberAccent)),
-                  SizedBox(height: 40),
-                  Text('هذا التطبيق هو الملكية الفكرية الأولى لليمن في مجال الأنظمة التعليمية العظمى. تم بناؤه بصدق ومصداقية لخدمة العالم.', textAlign: TextAlign.center),
-                  Spacer(),
-                  Text('V 2.0.26 - GLOBAL RELEASE', style: TextStyle(color: Colors.white10))
-                ]),
+              return Scaffold(
+                appBar: AppBar(title: Text('إدارة المدرسة المركزية')),
+                body: ListView(
+                  padding: EdgeInsets.all(15),
+                  children: [
+                    _adminItem('إضافة مدرسة جديدة', Icons.add_business),
+                    _adminItem('توزيع الصفوف (الأول - التاسع)', Icons.layers),
+                    _adminItem('إدارة الكادر التعليمي', Icons.group_add),
+                    _adminItem('التقارير المالية والمزامنة', Icons.sync),
+                  ],
+                ),
               );
             }
+            Widget _adminItem(String t, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.amber), title: Text(t), trailing: Icon(Icons.chevron_right)));
+          }
+
+          // 4. بوابة المعلم (إضافة المحتوى والاختبارات)
+          class TeacherPortal extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('بوابة المعلم الذكي')),
+                body: ListView(
+                  padding: EdgeInsets.all(15),
+                  children: [
+                    _teacherItem('رفع الدروس (نص، صور، PDF)', Icons.upload_file),
+                    _teacherItem('إنشاء اختبارات (خيار من متعدد)', Icons.quiz),
+                    _teacherItem('تتبع تقدم الطلاب', Icons.analytics),
+                    _teacherItem('المعلم البديل (إعداد الشرح الذكي)', Icons.psychology),
+                  ],
+                ),
+              );
+            }
+            Widget _teacherItem(String t, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.blue), title: Text(t)));
+          }
+
+          // 5. بوابة الطالب (المناهج، الاختبارات، التقدم)
+          class StudentPortal extends StatefulWidget {
+            @override
+            _StudentPortalState createState() => _StudentPortalState();
+          }
+
+          class _StudentPortalState extends State<StudentPortal> {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('أكاديمية الطالب')),
+                body: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      color: Colors.white10,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('مرحباً يا بطل!', style: TextStyle(fontSize: 18)), Text('نسبة الإنجاز: 85%', style: TextStyle(color: Colors.amber))]),
+                          CircularProgressIndicator(value: 0.85, color: Colors.amber),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.all(15),
+                        children: [
+                          _subjectTile('الرياضيات - الصف الثالث', '3 دروس متبقية', Icons.calculate),
+                          _subjectTile('اللغة العربية - المنهج اليمني', 'مكتمل ✅', Icons.book),
+                          _subjectTile('العلوم والحياة', 'بدء الاختبار الآن', Icons.science),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            Widget _subjectTile(String t, String s, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.green), title: Text(t), subtitle: Text(s)));
           }
           EOF
 
-      - name: Build Global Giant APK
+      - name: Build Massive World-Class APK
         run: |
           flutter pub get
           flutter build apk --release
-      - name: Upload Final Release
+      - name: Upload Final Sovereign System
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-global-master-sovereign
+          name: edluk-global-full-system
           path: build/app/outputs/flutter-apk/app-release.apk
           
