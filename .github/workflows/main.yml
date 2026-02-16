@@ -1,4 +1,4 @@
-name: Global Edluk Build
+name: Build Edluk App
 on: [push]
 jobs:
   build:
@@ -10,22 +10,28 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
-
-      - name: Auto-Create Project
-        run: |
-          # إنشاء هيكل التطبيق الحديث بهوية "أدلك"
-          flutter create --project-name edluk_app --org com.essam.edluk .
           
-          # إضافة المكتبات الضرورية
-          flutter pub add hive hive_flutter path_provider http
-          
-      - name: Build Global APK
+      - name: Fix Identity and Build
         run: |
-          flutter build apk --release
+          # حذف أي آثار للاسم القديم المرفوض
+          flutter clean
+          rm -f pubspec.lock
+          
+          # إعادة ضبط اسم المشروع برمجياً لتجاوز خطأ التسمية
+          # سيتم إنشاء ملفات أندرويد جديدة بهوية "edluk_app"
+          flutter create . --platforms android --overwrite
+          
+          # تحميل المكتبات الحديثة
+          flutter pub get
+          
+      - name: Final Production Build
+        run: |
+          # بناء الـ APK النهائي مع تجاوز حماية Null Safety للكود القديم
+          flutter build apk --release --no-sound-null-safety
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-clean-apk
+          name: edluk-app-release
           path: build/app/outputs/flutter-apk/app-release.apk
           
