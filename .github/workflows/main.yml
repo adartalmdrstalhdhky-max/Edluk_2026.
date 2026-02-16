@@ -1,4 +1,4 @@
-name: Global Edluk Recovery
+name: Global Edluk Historical Build
 on: [push]
 jobs:
   build:
@@ -6,36 +6,79 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. توصيل الكهرباء (تجهيز فلاتر) - هذه الخطوة التي كانت ناقصة
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
       
-      - name: Create Brand New Project
+      - name: Create Global Project
         run: |
-          # 2. بناء مشروع جديد تماماً بهوية 2026
+          # 1. إنشاء المشروع الأساسي
           flutter create --project-name edluk_app --org com.essam.edluk .
           
-      - name: Inject Issam's Code
+          # 2. توليد كود التطبيق الاحترافي (المعلم والذكاء الاصطناعي)
+          cat <<EOF > lib/main.dart
+          import 'package:flutter/material.dart';
+
+          void main() => runApp(EdlukApp());
+
+          class EdlukApp extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return MaterialApp(
+                title: 'أدلك - Edluk',
+                theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
+                home: HomePage(),
+                debugShowCheckedModeBanner: false,
+              );
+            }
+          }
+
+          class HomePage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('منارة الأجيال الرقمية'), centerTitle: true),
+                body: GridView.count(
+                  padding: EdgeInsets.all(16),
+                  crossAxisCount: 2,
+                  children: [
+                    _buildCard(context, 'المعلم الذكي', Icons.psychology, Colors.orange),
+                    _buildCard(context, 'الدروس التفاعلية', Icons.school, Colors.blue),
+                    _buildCard(context, 'المكتبة الرقمية', Icons.menu_book, Colors.green),
+                    _buildCard(context, 'تقارير الأداء', Icons.analytics, Colors.purple),
+                  ],
+                ),
+              );
+            }
+
+            Widget _buildCard(BuildContext context, String title, IconData icon, Color color) {
+              return Card(
+                elevation: 4,
+                child: InkWell(
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('قريباً: \$title'))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(icon, size: 50, color: color),
+                      SizedBox(height: 10),
+                      Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
+          EOF
+
+      - name: Build Historical APK
         run: |
-          # 3. سحب ملفاتك التي عدلتها فقط من المستودع القديم
-          git clone https://github.com/muntder/flutter-tdd-clean-architecture-course.git old_repo
-          
-          # استبدال الملفات بملفاتك الحقيقية التي وجدناها في سجل التعديلات
-          cp -f old_repo/lib/main.dart lib/main.dart
-          cp -f old_repo/lib/injection_container.dart lib/injection_container.dart
-          cp -rf old_repo/lib/features lib/
-          
-      - name: Build Final APK
-        run: |
-          # 4. بناء التطبيق النهائي
           flutter pub get
           flutter build apk --release --no-sound-null-safety
           
-      - name: Upload Final Product
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-final-app
+          name: edluk-historical-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           
