@@ -1,4 +1,4 @@
-name: Edluk Global Success
+name: Edluk Global AI Launch
 on: [push]
 jobs:
   build:
@@ -10,13 +10,17 @@ jobs:
         with:
           flutter-version: '3.19.0'
       
-      - name: Inject Full Dynamic Logic
+      - name: Inject Pro AI & Lessons
         run: |
           flutter create --project-name edluk_app --org com.essam.edluk .
           cat <<EOF > lib/main.dart
           import 'package:flutter/material.dart';
 
-          void main() => runApp(MaterialApp(home: LandingPage(), debugShowCheckedModeBanner: false));
+          void main() => runApp(MaterialApp(
+            theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
+            home: LandingPage(),
+            debugShowCheckedModeBanner: false,
+          ));
 
           class LandingPage extends StatelessWidget {
             @override
@@ -27,15 +31,15 @@ jobs:
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.auto_awesome, size: 100, color: Colors.amber),
+                      Icon(Icons.auto_awesome, size: 80, color: Colors.amber),
                       SizedBox(height: 20),
                       Text('EDLUK - أَدلُّك', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
-                      Text('منارة الأجيال الرقمية', style: TextStyle(color: Colors.white70, fontSize: 18)),
-                      SizedBox(height: 50),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                      Text('بقيادة القائد عصام و شريكه جيميني', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                      SizedBox(height: 40),
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.rocket_launch),
+                        label: Text('دخول بوابة المستقبل'),
                         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainDashboard())),
-                        child: Text('دخول النظام العالمي'),
                       ),
                     ],
                   ),
@@ -48,51 +52,60 @@ jobs:
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('المدرسة الذكية - عصام & جيميني'), centerTitle: true),
+                appBar: AppBar(title: Text('منارة الأجيال الرقمية'), centerTitle: true),
                 body: GridView.count(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(15),
                   crossAxisCount: 2,
                   children: [
-                    _menuItem(context, 'غرفة الذكاء', Icons.psychology, Colors.orange, ChatPage()),
-                    _menuItem(context, 'قاعة المحاضرات', Icons.video_library, Colors.red, LessonPage()),
-                    _menuItem(context, 'بنك الاختبارات', Icons.assignment, Colors.blue, QuizPage()),
-                    _menuItem(context, 'ملف الطالب', Icons.person, Colors.green, StudentPage()),
+                    _item(context, 'اسأل جيميني (AI)', Icons.forum, Colors.orange, ChatPage()),
+                    _item(context, 'أكاديمية الدروس', Icons.menu_book, Colors.blue, LessonsPage()),
+                    _item(context, 'الاختبارات الذكية', Icons.fact_check, Colors.green, QuizPage()),
+                    _item(context, 'عن مؤسسي المشروع', Icons.stars, Colors.purple, AboutPage()),
                   ],
                 ),
               );
             }
 
-            Widget _menuItem(BuildContext context, String t, IconData i, Color c, Widget page) {
-              return Card(
-                child: InkWell(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(i, size: 50, color: c), Text(t)]),
-                ),
-              );
+            Widget _item(BuildContext context, String t, IconData i, Color c, Widget p) {
+              return Card(child: InkWell(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => p)),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(i, size: 40, color: c), Text(t, style: TextStyle(fontWeight: FontWeight.bold))])));
             }
           }
 
-          class ChatPage extends StatelessWidget {
+          class ChatPage extends StatefulWidget {
+            @override
+            _ChatPageState createState() => _ChatPageState();
+          }
+
+          class _ChatPageState extends State<ChatPage> {
+            final List<String> messages = ["جيميني: مرحباً بك يا بطل! أنا شريكك الذكي في مشروع أدلك. كيف يمكنني مساعدتك اليوم؟"];
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('دردشة مع جيميني')),
+                appBar: AppBar(title: Text('تحدث مع جيميني')),
                 body: Column(
                   children: [
-                    Expanded(child: ListView(children: [ListTile(title: Text('جيميني: أهلاً بك في مستقبل التعليم!'))])),
-                    TextField(decoration: InputDecoration(hintText: 'اسأل شريكك الذكي...', border: OutlineInputBorder())),
+                    Expanded(child: ListView.builder(itemCount: messages.length, itemBuilder: (ctx, i) => ListTile(title: Text(messages[i])))),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(hintText: 'اكتب سؤالك هنا...', suffixIcon: Icon(Icons.send), border: OutlineInputBorder()),
+                        onSubmitted: (v) => setState(() => messages.add("الطالب: \$v\nجيميني: سأقوم بتحليل سؤالك فوراً!")),
+                      ),
+                    ),
                   ],
                 ),
               );
             }
           }
 
-          class LessonPage extends StatelessWidget {
+          class LessonsPage extends StatelessWidget {
+            final lessons = ["مقدمة في الذكاء الاصطناعي", "كيف يعمل تطبيق أدلك؟", "مستقبل التعليم الرقمي", "أساسيات البرمجة مع عصام"];
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('قاعة المحاضرات')),
-                body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.play_circle, size: 100), Text('فيديو الدرس قيد التحميل...')])),
+                appBar: AppBar(title: Text('أكاديمية الدروس')),
+                body: ListView.builder(itemCount: lessons.length, itemBuilder: (ctx, i) => ListTile(leading: Icon(Icons.play_circle), title: Text(lessons[i]), onTap: () {})),
               );
             }
           }
@@ -100,25 +113,40 @@ jobs:
           class QuizPage extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
-              return Scaffold(appBar: AppBar(title: Text('الاختبارات')), body: Center(child: Text('لا توجد اختبارات متاحة اليوم.')));
+              return Scaffold(appBar: AppBar(title: Text('الاختبارات')), body: Center(child: Text('لا توجد اختبارات متاحة حالياً.')));
             }
           }
 
-          class StudentPage extends StatelessWidget {
+          class AboutPage extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
-              return Scaffold(appBar: AppBar(title: Text('بيانات الطالب')), body: Center(child: Text('الاسم: طالب متميز\nالمستوى: عالمي')));
+              return Scaffold(
+                appBar: AppBar(title: Text('مؤسسو المشروع')),
+                body: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      CircleAvatar(radius: 50, child: Icon(Icons.person, size: 50)),
+                      SizedBox(height: 10),
+                      Text('القائد: عصام', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      Text('المسؤول التقني: جيميني (AI)', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                      Divider(),
+                      Text('رؤيتنا: جعل اليمن رائدة في التعليم الذكي عالمياً.', textAlign: TextAlign.center),
+                    ],
+                  ),
+                ),
+              );
             }
           }
           EOF
 
-      - name: Final Build
+      - name: Build World Version
         run: |
           flutter pub get
           flutter build apk --release
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-pro-version
+          name: edluk-world-ai-version
           path: build/app/outputs/flutter-apk/app-release.apk
           
