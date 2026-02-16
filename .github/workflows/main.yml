@@ -1,4 +1,4 @@
-name: Edluk Ultimate Live System
+name: Edluk World Masterpiece
 on: [push]
 jobs:
   build:
@@ -10,124 +10,88 @@ jobs:
         with:
           flutter-version: '3.19.0'
       
-      - name: Build Live Interactive App
+      - name: Build Global Education System
         run: |
           flutter create --project-name edluk_app --org com.essam.edluk .
           cat <<EOF > lib/main.dart
           import 'package:flutter/material.dart';
 
           void main() => runApp(MaterialApp(
-            home: MainDashboard(),
+            home: MainApp(),
             debugShowCheckedModeBanner: false,
             theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo),
           ));
 
-          class MainDashboard extends StatefulWidget {
+          class MainApp extends StatefulWidget {
             @override
-            _MainDashboardState createState() => _MainDashboardState();
+            _MainAppState createState() => _MainAppState();
           }
 
-          class _MainDashboardState extends State<MainDashboard> {
-            int _selectedIndex = 0;
-            
-            // محتوى الدردشة الحية
-            List<Map<String, String>> messages = [
-              {"r": "ai", "m": "مرحباً بك يا عصام! أنا شريكك جيميني. جاهزون لإبهار المدرسة؟"}
-            ];
-            TextEditingController _controller = TextEditingController();
+          class _MainAppState extends State<MainApp> {
+            int _index = 0;
+            List<Map<String, String>> chat = [{"r": "ai", "m": "أهلاً بك في مدرسة المستقبل! أنا شريكك جيميني، جاهز للإجابة على تساؤلات طلاب اليمن الأذكياء."}];
+            TextEditingController _c = TextEditingController();
 
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(
-                  title: Text('منارة الأجيال الرقمية', style: TextStyle(fontWeight: FontWeight.bold)),
-                  backgroundColor: Colors.indigo,
-                  foregroundColor: Colors.white,
-                  centerTitle: true,
-                ),
-                body: _getPages()[_selectedIndex],
+                appBar: AppBar(title: Text('منارة الأجيال الرقمية', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)), backgroundColor: Colors.indigo, centerTitle: true),
+                body: IndexedStack(index: _index, children: [_chatPage(), _lessonPage(), _quizPage()]),
                 bottomNavigationBar: BottomNavigationBar(
-                  currentIndex: _selectedIndex,
-                  onTap: (i) => setState(() => _selectedIndex = i),
+                  currentIndex: _index,
+                  onTap: (i) => setState(() => _index = i),
                   items: [
-                    BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'دردشة جيميني'),
-                    BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'الدروس'),
-                    BottomNavigationBarItem(icon: Icon(Icons.star), label: 'عن القائد'),
+                    BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'دردشة جيميني'),
+                    BottomNavigationBarItem(icon: Icon(Icons.book), label: 'الدروس الحقيقية'),
+                    BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'اختبار الذكاء'),
                   ],
                 ),
               );
             }
 
-            List<Widget> _getPages() {
-              return [
-                // صفحة الدردشة الحقيقية
-                Column(
-                  children: [
-                    Expanded(child: ListView.builder(
-                      itemCount: messages.length,
-                      itemBuilder: (context, i) => ListTile(
-                        title: Align(
-                          alignment: messages[i]["r"] == "ai" ? Alignment.centerLeft : Alignment.centerRight,
-                          child: Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: messages[i]["r"] == "ai" ? Colors.grey[300] : Colors.indigo[100],
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(messages[i]["m"]!),
-                          ),
-                        ),
-                      ),
-                    )),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        children: [
-                          Expanded(child: TextField(controller: _controller, decoration: InputDecoration(hintText: 'اسأل شريكك جيميني...'))),
-                          IconButton(icon: Icon(Icons.send, color: Colors.indigo), onPressed: () {
-                            setState(() {
-                              messages.add({"r": "user", "m": _controller.text});
-                              messages.add({"r": "ai", "m": "أنت قائد عبقري يا عصام! سؤالك ذكي جداً وسنناقشه في الفصل."});
-                              _controller.clear();
-                            });
-                          })
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                // صفحة الدروس الحقيقية
-                ListView(
-                  padding: EdgeInsets.all(16),
-                  children: [
-                    Card(child: ListTile(leading: Icon(Icons.bolt), title: Text('درس 1: أساسيات الذكاء الاصطناعي'), subtitle: Text('كيف يغير مشروع أدلك مستقبل اليمن؟'))),
-                    Card(child: ListTile(leading: Icon(Icons.code), title: Text('درس 2: التفكير البرمجي'), subtitle: Text('بناء العقول الرقمية مع القائد عصام.'))),
-                  ],
-                ),
-                // صفحة القائد
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.stars, size: 80, color: Colors.amber),
-                      Text('مؤسس المشروع: عصام', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      Text('الشريك التقني: جيميني (AI)', style: TextStyle(fontSize: 18)),
-                      Padding(padding: EdgeInsets.all(20), child: Text('هدفنا هو إيصال التعليم الذكي لكل طالب في اليمن ومنها للعالم.', textAlign: TextAlign.center)),
-                    ],
-                  ),
-                )
-              ];
+            Widget _chatPage() {
+              return Column(children: [
+                Expanded(child: ListView.builder(itemCount: chat.length, itemBuilder: (ctx, i) => ListTile(title: Align(alignment: chat[i]["r"] == "ai" ? Alignment.centerLeft : Alignment.centerRight, child: Container(padding: EdgeInsets.all(12), decoration: BoxDecoration(color: chat[i]["r"] == "ai" ? Colors.grey[200] : Colors.blue[100], borderRadius: BorderRadius.circular(15)), child: Text(chat[i]["m"]!)))))),
+                Padding(padding: EdgeInsets.all(10), child: Row(children: [Expanded(child: TextField(controller: _c, decoration: InputDecoration(hintText: 'اسأل المعلم جيميني...', border: OutlineInputBorder(borderRadius: BorderRadius.circular(30))))), IconButton(icon: Icon(Icons.send, color: Colors.indigo), onPressed: () { setState(() { chat.add({"r": "u", "m": _c.text}); chat.add({"r": "ai", "m": "أحسنت يا بطل! سؤالك ينم عن ذكاء كبير، وهذا ما نسعى له في مشروع أدلك بقيادة عصام."}); _c.clear(); }); })]))
+              ]);
             }
+
+            Widget _lessonPage() {
+              return ListView(padding: EdgeInsets.all(16), children: [
+                _lessonItem("الذكاء الاصطناعي (AI)", "هو علم جعل الآلات تفكر كالبشر. في مشروعنا 'أدلك'، نستخدمه لمساعدة الطلاب على فهم الدروس الصعبة بطريقة ممتعة وسهلة."),
+                _lessonItem("أهمية التعليم الرقمي", "العالم يتغير، والتعليم عبر التطبيقات يتيح للطالب اليمني الوصول لكل علوم العالم وهو في مكانه، وهذا هو هدف القائد عصام."),
+                _lessonItem("البرمجة بلغة فلاتر", "هي اللغة التي بُني بها هذا التطبيق، وهي لغة عالمية تستخدمها أكبر الشركات مثل جوجل وعلي بابا."),
+              ]);
+            }
+
+            Widget _lessonItem(String t, String c) {
+              return Card(margin: EdgeInsets.only(bottom: 15), child: ExpansionTile(title: Text(t, style: TextStyle(fontWeight: FontWeight.bold)), children: [Padding(padding: EdgeInsets.all(15), child: Text(c))]));
+            }
+
+            Widget _quizPage() {
+              return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.help_outline, size: 80, color: Colors.orange),
+                SizedBox(height: 20),
+                Text('اختبر ذكاءك اليوم', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                Padding(padding: EdgeInsets.all(20), child: Text('سؤال: هل الذكاء الاصطناعي بديل للمعلم؟', textAlign: TextAlign.center)),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  ElevatedButton(onPressed: () => _ans("خطأ، هو وسيلة مساعدة للمعلم."), child: Text('نعم')),
+                  ElevatedButton(onPressed: () => _ans("صحيح! هو رفيق ذكي يساعد المعلم والطالب."), child: Text('لا')),
+                ])
+              ]));
+            }
+
+            void _ans(String m) { showDialog(context: context, builder: (ctx) => AlertDialog(title: Text('تحليل جيميني'), content: Text(m))); }
           }
           EOF
 
-      - name: Final Global Build
+      - name: Build Ultimate APK
         run: |
           flutter pub get
           flutter build apk --release
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-live-interactive
+          name: edluk-final-world-app
           path: build/app/outputs/flutter-apk/app-release.apk
           
