@@ -4,26 +4,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      # 1. توصيل الكهرباء (تجهيز فلاتر) - هذه الخطوة التي كانت ناقصة
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+      
       - name: Create Brand New Project
         run: |
-          # 1. بناء مشروع جديد تماماً بأحدث تقنيات 2026
+          # 2. بناء مشروع جديد تماماً بهوية 2026
           flutter create --project-name edluk_app --org com.essam.edluk .
           
       - name: Inject Issam's Code
         run: |
-          # 2. جلب الملفات التي عدلتها أنت فقط من المستودع القديم
-          # سنستخدم رابط المستودع القديم لسحب "التعديلات" فقط
+          # 3. سحب ملفاتك التي عدلتها فقط من المستودع القديم
           git clone https://github.com/muntder/flutter-tdd-clean-architecture-course.git old_repo
           
-          # 3. استبدال الملفات الأساسية بملفاتك التي عدلتها
+          # استبدال الملفات بملفاتك الحقيقية التي وجدناها في سجل التعديلات
           cp -f old_repo/lib/main.dart lib/main.dart
           cp -f old_repo/lib/injection_container.dart lib/injection_container.dart
-          # نقل مجلد الميزات الذي يحتوي على عملك
           cp -rf old_repo/lib/features lib/
           
       - name: Build Final APK
         run: |
-          # 4. بناء التطبيق النهائي الذي يجمع بين نظافة 2026 وتعديلاتك
+          # 4. بناء التطبيق النهائي
           flutter pub get
           flutter build apk --release --no-sound-null-safety
           
