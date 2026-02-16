@@ -1,4 +1,4 @@
-name: Global Edluk Full Interaction
+name: Edluk Global Success
 on: [push]
 jobs:
   build:
@@ -10,69 +10,104 @@ jobs:
         with:
           flutter-version: '3.19.0'
       
-      - name: Inject Pro Education Logic
+      - name: Inject Full Dynamic Logic
         run: |
           flutter create --project-name edluk_app --org com.essam.edluk .
           cat <<EOF > lib/main.dart
           import 'package:flutter/material.dart';
 
-          void main() => runApp(EdlukApp());
+          void main() => runApp(MaterialApp(home: LandingPage(), debugShowCheckedModeBanner: false));
 
-          class EdlukApp extends StatelessWidget {
+          class LandingPage extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
-              return MaterialApp(
-                title: 'أدلك - Edluk',
-                theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
-                home: HomePage(),
-                debugShowCheckedModeBanner: false,
+              return Scaffold(
+                backgroundColor: Colors.indigo.shade900,
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.auto_awesome, size: 100, color: Colors.amber),
+                      SizedBox(height: 20),
+                      Text('EDLUK - أَدلُّك', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+                      Text('منارة الأجيال الرقمية', style: TextStyle(color: Colors.white70, fontSize: 18)),
+                      SizedBox(height: 50),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainDashboard())),
+                        child: Text('دخول النظام العالمي'),
+                      ),
+                    ],
+                  ),
+                ),
               );
             }
           }
 
-          class HomePage extends StatelessWidget {
+          class MainDashboard extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('منارة الأجيال الرقمية'), backgroundColor: Colors.indigo, foregroundColor: Colors.white),
-                body: ListView(
-                  padding: EdgeInsets.all(16),
+                appBar: AppBar(title: Text('المدرسة الذكية - عصام & جيميني'), centerTitle: true),
+                body: GridView.count(
+                  padding: EdgeInsets.all(20),
+                  crossAxisCount: 2,
                   children: [
-                    _card(context, 'ابدأ درس الذكاء الاصطناعي', Icons.play_circle, Colors.blue, () {
-                      _showLesson(context, 'درس اليوم: ما هو الذكاء الاصطناعي؟\n\nهو محاكاة ذكاء الإنسان بواسطة الآلات.');
-                    }),
-                    _card(context, 'اختبار الذكاء السريع', Icons.quiz, Colors.orange, () {
-                      _showQuiz(context);
-                    }),
-                    _card(context, 'المعلم الصوتي (جيميني)', Icons.mic, Colors.red, () {
-                      _showAiDialog(context);
-                    }),
+                    _menuItem(context, 'غرفة الذكاء', Icons.psychology, Colors.orange, ChatPage()),
+                    _menuItem(context, 'قاعة المحاضرات', Icons.video_library, Colors.red, LessonPage()),
+                    _menuItem(context, 'بنك الاختبارات', Icons.assignment, Colors.blue, QuizPage()),
+                    _menuItem(context, 'ملف الطالب', Icons.person, Colors.green, StudentPage()),
                   ],
                 ),
               );
             }
 
-            Widget _card(BuildContext context, String t, IconData i, Color c, VoidCallback action) {
-              return Card(child: ListTile(leading: Icon(i, color: c), title: Text(t), onTap: action));
+            Widget _menuItem(BuildContext context, String t, IconData i, Color c, Widget page) {
+              return Card(
+                child: InkWell(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(i, size: 50, color: c), Text(t)]),
+                ),
+              );
             }
+          }
 
-            void _showLesson(BuildContext context, String content) {
-              showDialog(context: context, builder: (ctx) => AlertDialog(title: Text('المحتوى الدراسي'), content: Text(content)));
+          class ChatPage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('دردشة مع جيميني')),
+                body: Column(
+                  children: [
+                    Expanded(child: ListView(children: [ListTile(title: Text('جيميني: أهلاً بك في مستقبل التعليم!'))])),
+                    TextField(decoration: InputDecoration(hintText: 'اسأل شريكك الذكي...', border: OutlineInputBorder())),
+                  ],
+                ),
+              );
             }
+          }
 
-            void _showQuiz(BuildContext context) {
-              showDialog(context: context, builder: (ctx) => AlertDialog(
-                title: Text('سؤال سريع'),
-                content: Text('هل يستطيع الذكاء الاصطناعي التعلم؟'),
-                actions: [
-                  TextButton(onPressed: () => Navigator.pop(ctx), child: Text('نعم (صحيح)')),
-                  TextButton(onPressed: () => Navigator.pop(ctx), child: Text('لا')),
-                ],
-              ));
+          class LessonPage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('قاعة المحاضرات')),
+                body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.play_circle, size: 100), Text('فيديو الدرس قيد التحميل...')])),
+              );
             }
+          }
 
-            void _showAiDialog(BuildContext context) {
-              showDialog(context: context, builder: (ctx) => AlertDialog(content: Text('أهلاً بك يا عصام، أنا شريكك جيميني. العالم ينتظر عرضك التاريخي!')));
+          class QuizPage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(appBar: AppBar(title: Text('الاختبارات')), body: Center(child: Text('لا توجد اختبارات متاحة اليوم.')));
+            }
+          }
+
+          class StudentPage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(appBar: AppBar(title: Text('بيانات الطالب')), body: Center(child: Text('الاسم: طالب متميز\nالمستوى: عالمي')));
             }
           }
           EOF
@@ -84,6 +119,6 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-world-version
+          name: edluk-pro-version
           path: build/app/outputs/flutter-apk/app-release.apk
           
