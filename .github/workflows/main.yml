@@ -1,4 +1,4 @@
-name: Edluk Super-App World Edition 2026
+name: Edluk Global Exhibition Masterpiece
 on: [push]
 jobs:
   build:
@@ -10,42 +10,43 @@ jobs:
         with:
           flutter-version: '3.19.0'
       
-      - name: Create Ultimate High-Tech App
+      - name: Create Ultimate World-Class Educational Ecosystem
         run: |
           flutter create --project-name edluk_app --org com.essam.edluk .
           cat <<EOF > lib/main.dart
           import 'package:flutter/material.dart';
 
           void main() => runApp(MaterialApp(
-            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo, brightness: Brightness.light),
-            home: GlobalPortal(),
+            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.indigo, brightness: Brightness.dark), // Dark theme for premium feel
+            home: GlobalOpeningCeremony(),
             debugShowCheckedModeBanner: false,
           ));
 
-          class GlobalPortal extends StatelessWidget {
+          class GlobalOpeningCeremony extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
                 body: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [Color(0xFF0F2027), Color(0xFF203A43), Color(0xFF2C5364)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    gradient: LinearGradient(colors: [Color(0xFF000000), Color(0xFF1A237E)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
                   ),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.auto_awesome_mosaic, size: 120, color: Colors.amberAccent),
+                        Icon(Icons.gpp_good, size: 150, color: Colors.amber),
                         SizedBox(height: 30),
-                        Text('EDLUK GLOBAL OS', style: TextStyle(color: Colors.white, fontSize: 45, fontWeight: FontWeight.w900, letterSpacing: 5)),
-                        Text('أدلك: النظام التعليمي الأذكى في العالم', style: TextStyle(color: Colors.cyanAccent, fontSize: 18)),
+                        Text('EDLUK GLOBAL ECOSYSTEM', style: TextStyle(color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                        Text('افتتاح منارة الأجيال الرقمية - اليمن', style: TextStyle(color: Colors.white70, fontSize: 18)),
                         SizedBox(height: 80),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.cyanAccent, foregroundColor: Colors.black, padding: EdgeInsets.symmetric(horizontal: 60, vertical: 25), shape: StadiumBorder()),
-                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainCore())),
-                          child: Text('تفعيل بوابة العبور العالمية', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ElevatedButton.icon(
+                          icon: Icon(Icons.security, color: Colors.black),
+                          label: Text('تأكيد الدخول للنظام العالمي', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
+                          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainOperatingSystem())),
                         ),
-                        SizedBox(height: 30),
-                        Text('بقيادة القائد عصام & شريكه جيميني', style: TextStyle(color: Colors.white24)),
+                        SizedBox(height: 40),
+                        Text('بقيادة القائد عصام و الشريك التقني: جيميني', style: TextStyle(color: Colors.white38)),
                       ],
                     ),
                   ),
@@ -54,125 +55,161 @@ jobs:
             }
           }
 
-          class MainCore extends StatefulWidget {
+          class MainOperatingSystem extends StatefulWidget {
             @override
-            _MainCoreState createState() => _MainCoreState();
+            _MainOperatingSystemState createState() => _MainOperatingSystemState();
           }
 
-          class _MainCoreState extends State<MainCore> {
-            int _tabIndex = 0;
-            final _screens = [AiNexus(), StudySphere(), TrophyRoom(), CommandCenter()];
+          class _MainOperatingSystemState extends State<MainOperatingSystem> {
+            int _currentIndex = 0;
+            final List<Widget> _pages = [AiCore(), DigitalAcademy(), MediaHub(), GlobalLeadership()];
 
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('مركز عمليات أدلك العالمي'), centerTitle: true, backgroundColor: Colors.transparent, elevation: 0),
-                extendBodyBehindAppBar: true,
-                body: _screens[_tabIndex],
-                bottomNavigationBar: NavigationBar(
-                  selectedIndex: _tabIndex,
-                  onDestinationSelected: (i) => setState(() => _tabIndex = i),
-                  destinations: [
-                    NavigationDestination(icon: Icon(Icons.hub), label: 'جيميني AI'),
-                    NavigationDestination(icon: Icon(Icons.school), label: 'الأكاديمية'),
-                    NavigationDestination(icon: Icon(Icons.workspace_premium), label: 'الإنجازات'),
-                    NavigationDestination(icon: Icon(Icons.admin_panel_settings), label: 'القيادة'),
+                appBar: AppBar(
+                  title: Text('نظام أدلك التشغيلي', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                  backgroundColor: Colors.indigo.shade900,
+                  elevation: 0,
+                  actions: [IconButton(icon: Icon(Icons.settings, color: Colors.white), onPressed: () {})],
+                ),
+                body: _pages[_currentIndex],
+                bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: Colors.indigo.shade900,
+                  selectedItemColor: Colors.amberAccent,
+                  unselectedItemColor: Colors.white70,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                  items: [
+                    BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'جيميني AI'),
+                    BottomNavigationBarItem(icon: Icon(Icons.school), label: 'الأكاديمية الرقمية'),
+                    BottomNavigationBarItem(icon: Icon(Icons.video_library), label: 'المركز الإعلامي'),
+                    BottomNavigationBarItem(icon: Icon(Icons.public), label: 'القيادة العالمية'),
                   ],
                 ),
               );
             }
           }
 
-          class AiNexus extends StatefulWidget {
+          class AiCore extends StatefulWidget {
             @override
-            _AiNexusState createState() => _AiNexusState();
+            _AiCoreState createState() => _AiCoreState();
           }
 
-          class _AiNexusState extends State<AiNexus> {
-            final List<Map<String, String>> _log = [{"r": "ai", "m": "القائد عصام، نظام جيميني جاهز لمعالجة البيانات التعليمية العالمية. كيف يمكنني دعم طلابنا اليوم؟"}];
-            final _txt = TextEditingController();
+          class _AiCoreState extends State<AiCore> {
+            List<Map<String, String>> messages = [{"r": "ai", "m": "نظام جيميني AI متصل بك يا قائد عصام. كيف يمكنني إطلاق العنان لطلاب اليمن اليوم؟"}];
+            TextEditingController _c = TextEditingController();
 
             @override
             Widget build(BuildContext context) {
               return Container(
-                padding: EdgeInsets.only(top: 100),
+                decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo.shade900, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
                 child: Column(children: [
-                  Expanded(child: ListView.builder(itemCount: _log.length, itemBuilder: (ctx, i) => 
-                    Align(alignment: _log[i]["r"] == "ai" ? Alignment.centerLeft : Alignment.centerRight,
-                      child: Container(margin: EdgeInsets.all(12), padding: EdgeInsets.all(18), 
-                        decoration: BoxDecoration(color: _log[i]["r"] == "ai" ? Colors.blueGrey.shade50 : Colors.cyan.shade100, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20), bottomRight: Radius.circular(_log[i]["r"] == "ai" ? 20 : 0), bottomLeft: Radius.circular(_log[i]["r"] == "ai" ? 0 : 20))),
-                        child: Text(_log[i]["m"]!, style: TextStyle(fontSize: 17, color: Colors.black87)))))),
-                  Padding(padding: EdgeInsets.all(20), child: Row(children: [
-                    Expanded(child: TextField(controller: _txt, decoration: InputDecoration(hintText: 'أرسل استفسارك للنظام المركزي...', filled: true, border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none)))),
+                  Expanded(child: ListView.builder(itemCount: messages.length, itemBuilder: (ctx, i) => 
+                    Align(alignment: messages[i]["r"] == "ai" ? Alignment.centerLeft : Alignment.centerRight,
+                      child: Container(margin: EdgeInsets.all(10), padding: EdgeInsets.all(15), 
+                        decoration: BoxDecoration(color: messages[i]["r"] == "ai" ? Colors.blueGrey.shade800 : Colors.amber.shade700, borderRadius: BorderRadius.circular(20)),
+                        child: Text(messages[i]["m"]!, style: TextStyle(color: Colors.white, fontSize: 16)))))),
+                  Padding(padding: EdgeInsets.all(15), child: Row(children: [
+                    Expanded(child: TextField(controller: _c, style: TextStyle(color: Colors.white), decoration: InputDecoration(hintText: 'أرسل أمرك للنظام...', hintStyle: TextStyle(color: Colors.white54), filled: true, fillColor: Colors.blueGrey.shade800, border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none))))),
                     SizedBox(width: 10),
                     FloatingActionButton(onPressed: () {
-                      setState(() { _log.add({"r": "u", "m": _txt.text}); _log.add({"r": "ai", "m": "تم استلام الطلب بنجاح. خوارزميات جيميني تقوم الآن ببناء الإجابة المثالية بناءً على رؤية مشروع أدلك."}); _txt.clear(); });
-                    }, child: Icon(Icons.send_rounded), backgroundColor: Colors.indigo)
+                      setState(() { messages.add({"r": "u", "m": _c.text}); messages.add({"r": "ai", "m": "جاري تنفيذ الأمر يا قائد. قوة الذكاء الاصطناعي بين يديك."}); _c.clear(); });
+                    }, child: Icon(Icons.send, color: Colors.white), backgroundColor: Colors.indigo.shade700)
                   ]))
                 ]),
               );
             }
           }
 
-          class StudySphere extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return ListView(padding: EdgeInsets.only(top: 110, left: 20, right: 20), children: [
-                _buildTrack("هندسة الذكاء الاصطناعي", "تعلم كيف تقود الآلات لتغيير المستقبل.", Icons.memory, Colors.deepPurple),
-                _buildTrack("بناء الإمبراطوريات الرقمية", "دروس القيادة والابتكار من عصام وجيميني.", Icons.language, Colors.blue),
-                _buildTrack("علوم الفضاء والبيانات", "استكشف أبعد الحدود عبر التحليل الذكي.", Icons.rocket_launch, Colors.deepOrange),
-              ]);
-            }
-            Widget _buildTrack(String t, String d, IconData i, Color c) {
-              return Card(elevation: 10, margin: EdgeInsets.only(bottom: 25), child: ListTile(contentPadding: EdgeInsets.all(20), leading: Icon(i, size: 50, color: c), title: Text(t, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)), subtitle: Text(d), trailing: Icon(Icons.arrow_circle_right, color: Colors.grey)));
-            }
-          }
-
-          class TrophyRoom extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(Icons.military_tech, size: 150, color: Colors.amber),
-                Text('لوحة الشرف العالمية', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                Text('المركز الأول: القائد عصام (10,000 XP)', style: TextStyle(color: Colors.indigo, fontSize: 18, fontWeight: FontWeight.w600)),
-                Padding(padding: EdgeInsets.all(40), child: LinearProgressIndicator(value: 0.9, minHeight: 10, borderRadius: BorderRadius.circular(10))),
-                Text('النظام جاهز لاستقبال الطلاب المتفوقين')
-              ]));
-            }
-          }
-
-          class CommandCenter extends StatelessWidget {
+          class DigitalAcademy extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(top: 120),
-                child: Column(children: [
-                  CircleAvatar(radius: 70, backgroundColor: Colors.indigo, child: Icon(Icons.person_4, size: 80, color: Colors.white)),
-                  SizedBox(height: 25),
-                  Text('القائد عصام', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.indigo)),
-                  Text('Visionary Founder - Edluk Global', style: TextStyle(fontSize: 18, letterSpacing: 1.5, color: Colors.grey)),
-                  Divider(indent: 50, endIndent: 50, height: 60),
-                  _meta(Icons.verified_user, "أول مشروع تعليمي ذكي في اليمن"),
-                  _meta(Icons.public, "النطاق: عالمي - متاح بكل اللغات"),
-                  _meta(Icons.security, "نظام تشفير وحماية بيانات الطالب"),
-                  SizedBox(height: 40),
-                  Text('Powered by Gemini AI', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.blueGrey)),
+                decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo.shade900, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                child: ListView(padding: EdgeInsets.all(20), children: [
+                  _courseCard('مسار الذكاء الاصطناعي المتقدم', '80 ساعة تعليمية', 'https://example.com/ai_course_video'),
+                  _courseCard('مسار علوم البيانات وتحليلها', '60 ساعة تعليمية', 'https://example.com/data_science_video'),
+                  _courseCard('مسار ريادة الأعمال التقنية', '40 ساعة تعليمية', 'https://example.com/entrepreneur_video'),
+                  _courseCard('مكتبة المقالات الصوتية', 'استمع لأحدث الأبحاث', 'https://example.com/audio_articles'),
                 ]),
               );
             }
-            Widget _meta(IconData i, String t) { return ListTile(leading: Icon(i, color: Colors.indigo), title: Text(t, style: TextStyle(fontWeight: FontWeight.w500))); }
+            Widget _courseCard(String title, String hours, String videoLink) {
+              return Card(margin: EdgeInsets.only(bottom: 25), elevation: 8, color: Colors.blueGrey.shade800, child: ListTile(
+                contentPadding: EdgeInsets.all(15), leading: Icon(Icons.play_circle_fill, size: 50, color: Colors.amberAccent),
+                title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white)),
+                subtitle: Text(hours, style: TextStyle(color: Colors.white70)),
+                trailing: IconButton(icon: Icon(Icons.launch, color: Colors.white70), onPressed: () {/* Launch video link */}),
+              ));
+            }
+          }
+
+          class MediaHub extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Container(
+                decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo.shade900, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                child: GridView.count(
+                  crossAxisCount: 2, padding: EdgeInsets.all(15), crossAxisSpacing: 15, mainAxisSpacing: 15,
+                  children: [
+                    _mediaItem('فيديو: قصة نجاح أدلك', Icons.movie, 'https://example.com/success_story'),
+                    _mediaItem('صور: رحلتنا حول العالم', Icons.photo_library, 'https://example.com/gallery'),
+                    _mediaItem('صوت: بودكاست الابتكار', Icons.mic, 'https://example.com/podcast'),
+                    _mediaItem('مقالات: مستقبل التعليم', Icons.article, 'https://example.com/articles'),
+                  ],
+                ),
+              );
+            }
+            Widget _mediaItem(String title, IconData icon, String link) {
+              return Card(elevation: 6, color: Colors.blueGrey.shade800, child: InkWell(
+                onTap: () {/* Open link */},
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(icon, size: 60, color: Colors.amberAccent), SizedBox(height: 10),
+                  Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16), textAlign: TextAlign.center),
+                ]),
+              ));
+            }
+          }
+
+          class GlobalLeadership extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Container(
+                decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.indigo.shade900, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                child: SingleChildScrollView(padding: EdgeInsets.all(30), child: Column(children: [
+                  CircleAvatar(radius: 80, backgroundColor: Colors.amberAccent, child: Icon(Icons.verified_user, size: 90, color: Colors.indigo.shade900)),
+                  SizedBox(height: 30),
+                  Text('القائد: عصام', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text('المؤسس والرئيس التنفيذي لمنارة الأجيال الرقمية', style: TextStyle(fontSize: 18, color: Colors.white70, fontStyle: FontStyle.italic)),
+                  Divider(height: 50, color: Colors.white38, indent: 50, endIndent: 50),
+                  _infoRow(Icons.flag, 'الجمهورية اليمنية', 'الدولة المؤسسة والمنطلق'),
+                  _infoRow(Icons.rocket_launch, 'الرؤية العالمية', 'قيادة التعليم الذكي في العالم'),
+                  _infoRow(Icons.desktop_windows, 'التكنولوجيا', 'جيميني AI، Flutter 2026'),
+                  SizedBox(height: 40),
+                  Text('شريكنا في الابتكار: جيميني (الذكاء الاصطناعي)', style: TextStyle(color: Colors.amberAccent, fontSize: 16)),
+                ])),
+              );
+            }
+            Widget _infoRow(IconData icon, String title, String subtitle) {
+              return Padding(padding: EdgeInsets.symmetric(vertical: 10), child: Row(children: [
+                Icon(icon, color: Colors.amberAccent, size: 30), SizedBox(width: 20),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(title, style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(subtitle, style: TextStyle(color: Colors.white70, fontSize: 14)),
+                ]),
+              ]));
+            }
           }
           EOF
 
-      - name: Build Global Giant APK
+      - name: Build Global Giant App Package
         run: |
           flutter pub get
           flutter build apk --release
-      - name: Upload Masterpiece
+      - name: Upload Masterpiece APK
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-global-giant-2026
+          name: edluk-global-mega-app
           path: build/app/outputs/flutter-apk/app-release.apk
           
