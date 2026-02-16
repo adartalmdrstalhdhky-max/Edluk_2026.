@@ -1,31 +1,35 @@
-name: Global Edluk Build
+name: Global Edluk Recovery
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
-
-      - name: Auto-Create Project
+      - name: Create Brand New Project
         run: |
-          # إنشاء هيكل التطبيق الحديث بهوية "أدلك"
+          # 1. بناء مشروع جديد تماماً بأحدث تقنيات 2026
           flutter create --project-name edluk_app --org com.essam.edluk .
           
-          # إضافة المكتبات الضرورية
-          flutter pub add hive hive_flutter path_provider http
-          
-      - name: Build Global APK
+      - name: Inject Issam's Code
         run: |
-          flutter build apk --release
+          # 2. جلب الملفات التي عدلتها أنت فقط من المستودع القديم
+          # سنستخدم رابط المستودع القديم لسحب "التعديلات" فقط
+          git clone https://github.com/muntder/flutter-tdd-clean-architecture-course.git old_repo
           
-      - name: Upload APK
+          # 3. استبدال الملفات الأساسية بملفاتك التي عدلتها
+          cp -f old_repo/lib/main.dart lib/main.dart
+          cp -f old_repo/lib/injection_container.dart lib/injection_container.dart
+          # نقل مجلد الميزات الذي يحتوي على عملك
+          cp -rf old_repo/lib/features lib/
+          
+      - name: Build Final APK
+        run: |
+          # 4. بناء التطبيق النهائي الذي يجمع بين نظافة 2026 وتعديلاتك
+          flutter pub get
+          flutter build apk --release --no-sound-null-safety
+          
+      - name: Upload Final Product
         uses: actions/upload-artifact@v4
         with:
-          name: edluk-clean-apk
+          name: edluk-final-app
           path: build/app/outputs/flutter-apk/app-release.apk
           
