@@ -1,181 +1,114 @@
-name: Edluk Global Educational OS - Full Architecture
-on: [push]
+name: Edluk World-Class AI System Build
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Flutter
+      - uses: actions/checkout@v3
+
+      - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
-      
-      - name: Deploy Full School Management System
+          flutter-version: '3.16.0'
+
+      - name: Create Edluk Core Structure
         run: |
-          flutter create --project-name edluk_app --org com.essam.edluk .
-          cat <<EOF > lib/main.dart
-          import 'package:flutter/material.dart';
-
-          void main() => runApp(MaterialApp(
-            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.amber, brightness: Brightness.dark),
-            home: SystemBootScreen(),
-            debugShowCheckedModeBanner: false,
-          ));
-
-          // 1. شاشة إقلاع النظام (تشخيص قواعد البيانات)
-          class SystemBootScreen extends StatefulWidget {
+          mkdir -p lib/screens
+          # إنشاء ملف الإعدادات الأساسي
+          echo "import 'package:flutter/material.dart';
+          void main() => runApp(EdlukApp());
+          class EdlukApp extends StatelessWidget {
             @override
-            _SystemBootScreenState createState() => _SystemBootScreenState();
-          }
-
-          class _SystemBootScreenState extends State<SystemBootScreen> {
-            @override
-            void initState() {
-              super.initState();
-              Future.delayed(Duration(seconds: 3), () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RoleSelectionScreen()));
-              });
+            Widget build(BuildContext context) {
+              return MaterialApp(
+                title: 'Edluk 2026',
+                theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+                home: LoginScreen(),
+              );
             }
+          }" > lib/main.dart
 
+          # إنشاء شاشة تسجيل دخول ذكية
+          echo "import 'package:flutter/material.dart';
+          class LoginScreen extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                backgroundColor: Colors.black,
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.account_balance, size: 100, color: Colors.amber),
-                      SizedBox(height: 20),
-                      Text('EDLUK GLOBAL OS', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
-                      Text('جاري تحميل النظام المدرسي الشامل...', style: TextStyle(color: Colors.amberAccent)),
-                      SizedBox(height: 50),
-                      CircularProgressIndicator(color: Colors.amber),
-                    ],
+                body: Container(
+                  decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.blue.shade900, Colors.blue.shade500])),
+                  child: Center(
+                    child: Card(
+                      margin: EdgeInsets.all(20),
+                      child: Padding(
+                        padding: EdgeInsets.all(25),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('EDLUK 2026', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 20),
+                            TextField(decoration: InputDecoration(labelText: 'اسم المستخدم/رقم القيد')),
+                            TextField(decoration: InputDecoration(labelText: 'كلمة المرور'), obscureText: true),
+                            SizedBox(height: 30),
+                            ElevatedButton(
+                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => Dashboard())),
+                              child: Text('دخول إلى النظام الذكي'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               );
             }
-          }
+          }" > lib/screens/login.dart
 
-          // 2. شاشة اختيار الأدوار (مدير، معلم، طالب)
-          class RoleSelectionScreen extends StatelessWidget {
+          # إنشاء لوحة التحكم (المعلم البديل + الدروس)
+          echo "import 'package:flutter/material.dart';
+          class Dashboard extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('بوابة الدخول العالمية'), centerTitle: true),
+                appBar: AppBar(title: Text('نظام منارة الأجيال الرقمي')),
+                bottomNavigationBar: BottomNavigationBar(items: [
+                  BottomNavigationBarItem(icon: Icon(Icons.school), label: 'الدروس'),
+                  BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'المعلم البديل'),
+                  BottomNavigationBarItem(icon: Icon(Icons.sync), label: 'المزامنة'),
+                ]),
                 body: GridView.count(
-                  crossAxisCount: 1, childAspectRatio: 3, padding: EdgeInsets.all(20),
+                  crossAxisCount: 2,
+                  padding: EdgeInsets.all(15),
                   children: [
-                    _roleCard(context, 'حساب مدير المدرسة', Icons.admin_panel_settings, Colors.red, AdminDashboard()),
-                    _roleCard(context, 'حساب المعلم', Icons.school, Colors.blue, TeacherPortal()),
-                    _roleCard(context, 'حساب الطالب', Icons.person, Colors.green, StudentPortal()),
+                    _buildCard('المكتبة الذكية (JSON)', Icons.menu_book),
+                    _buildCard('الذكاء الاصطناعي', Icons.auto_awesome),
+                    _buildCard('جدول المدرسة', Icons.table_chart),
+                    _buildCard('التواصل الإنساني', Icons.chat),
                   ],
                 ),
               );
             }
-
-            Widget _roleCard(BuildContext context, String title, IconData icon, Color color, Widget page) {
+            Widget _buildCard(String title, IconData icon) {
               return Card(
-                child: ListTile(
-                  leading: Icon(icon, size: 40, color: color),
-                  title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                  subtitle: Text('نظام العمل بدون إنترنت مفعّل ✅'),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => page)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(icon, size: 50, color: Colors.blue), Text(title)],
                 ),
               );
             }
-          }
+          }" > lib/screens/dashboard.dart
 
-          // 3. لوحة تحكم المدير (إدارة المدارس والصفوف)
-          class AdminDashboard extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(
-                appBar: AppBar(title: Text('إدارة المدرسة المركزية')),
-                body: ListView(
-                  padding: EdgeInsets.all(15),
-                  children: [
-                    _adminItem('إضافة مدرسة جديدة', Icons.add_business),
-                    _adminItem('توزيع الصفوف (الأول - التاسع)', Icons.layers),
-                    _adminItem('إدارة الكادر التعليمي', Icons.group_add),
-                    _adminItem('التقارير المالية والمزامنة', Icons.sync),
-                  ],
-                ),
-              );
-            }
-            Widget _adminItem(String t, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.amber), title: Text(t), trailing: Icon(Icons.chevron_right)));
-          }
-
-          // 4. بوابة المعلم (إضافة المحتوى والاختبارات)
-          class TeacherPortal extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(
-                appBar: AppBar(title: Text('بوابة المعلم الذكي')),
-                body: ListView(
-                  padding: EdgeInsets.all(15),
-                  children: [
-                    _teacherItem('رفع الدروس (نص، صور، PDF)', Icons.upload_file),
-                    _teacherItem('إنشاء اختبارات (خيار من متعدد)', Icons.quiz),
-                    _teacherItem('تتبع تقدم الطلاب', Icons.analytics),
-                    _teacherItem('المعلم البديل (إعداد الشرح الذكي)', Icons.psychology),
-                  ],
-                ),
-              );
-            }
-            Widget _teacherItem(String t, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.blue), title: Text(t)));
-          }
-
-          // 5. بوابة الطالب (المناهج، الاختبارات، التقدم)
-          class StudentPortal extends StatefulWidget {
-            @override
-            _StudentPortalState createState() => _StudentPortalState();
-          }
-
-          class _StudentPortalState extends State<StudentPortal> {
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(
-                appBar: AppBar(title: Text('أكاديمية الطالب')),
-                body: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      color: Colors.white10,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('مرحباً يا بطل!', style: TextStyle(fontSize: 18)), Text('نسبة الإنجاز: 85%', style: TextStyle(color: Colors.amber))]),
-                          CircularProgressIndicator(value: 0.85, color: Colors.amber),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.all(15),
-                        children: [
-                          _subjectTile('الرياضيات - الصف الثالث', '3 دروس متبقية', Icons.calculate),
-                          _subjectTile('اللغة العربية - المنهج اليمني', 'مكتمل ✅', Icons.book),
-                          _subjectTile('العلوم والحياة', 'بدء الاختبار الآن', Icons.science),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            Widget _subjectTile(String t, String s, IconData i) => Card(child: ListTile(leading: Icon(i, color: Colors.green), title: Text(t), subtitle: Text(s)));
-          }
-          EOF
-
-      - name: Build Massive World-Class APK
+      - name: Build Global APK
         run: |
           flutter pub get
           flutter build apk --release
-      - name: Upload Final Sovereign System
-        uses: actions/upload-artifact@v4
+
+      - name: Upload Result
+        uses: actions/upload-artifact@v3
         with:
-          name: edluk-global-full-system
+          name: Edluk-Pro-Release
           path: build/app/outputs/flutter-apk/app-release.apk
           
