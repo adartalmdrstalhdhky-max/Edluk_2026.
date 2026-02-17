@@ -8,96 +8,85 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # تحديث للنسخة الرابعة
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          flutter-version: '3.19.0' # استخدام أحدث نسخة مستقرة
 
-      - name: Create Edluk Core Structure
+      - name: Create Edluk Global Project Structure
         run: |
           mkdir -p lib/screens
-          # إنشاء ملف الإعدادات الأساسي
+          # 1. الملف الرئيسي مع نظام الثيمات العالمي
           echo "import 'package:flutter/material.dart';
-          void main() => runApp(EdlukApp());
-          class EdlukApp extends StatelessWidget {
+          import 'screens/login.dart';
+          void main() => runApp(EdlukPro());
+          class EdlukPro extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return MaterialApp(
-                title: 'Edluk 2026',
-                theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blueAccent),
                 home: LoginScreen(),
               );
             }
           }" > lib/main.dart
 
-          # إنشاء شاشة تسجيل دخول ذكية
+          # 2. واجهة الدخول الاحترافية
           echo "import 'package:flutter/material.dart';
+          import 'dashboard.dart';
           class LoginScreen extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                body: Container(
-                  decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.blue.shade900, Colors.blue.shade500])),
-                  child: Center(
-                    child: Card(
-                      margin: EdgeInsets.all(20),
-                      child: Padding(
-                        padding: EdgeInsets.all(25),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('EDLUK 2026', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 20),
-                            TextField(decoration: InputDecoration(labelText: 'اسم المستخدم/رقم القيد')),
-                            TextField(decoration: InputDecoration(labelText: 'كلمة المرور'), obscureText: true),
-                            SizedBox(height: 30),
-                            ElevatedButton(
-                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => Dashboard())),
-                              child: Text('دخول إلى النظام الذكي'),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                body: Stack(children: [
+                  Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft, colors: [Colors.blue.shade900, Colors.black]))),
+                  Center(child: SingleChildScrollView(child: Column(children: [
+                    Icon(Icons.auto_awesome, size: 80, color: Colors.white),
+                    SizedBox(height: 20),
+                    Text('EDLUK 2026', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, letterSpacing: 2)),
+                    Text('نظام منارة الأجيال الذكي', style: TextStyle(color: Colors.white70)),
+                    Card(margin: EdgeInsets.all(30), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      child: Padding(padding: EdgeInsets.all(25), child: Column(children: [
+                        TextField(decoration: InputDecoration(labelText: 'رقم القيد الرقمي', prefixIcon: Icon(Icons.person))),
+                        TextField(obscureText: true, decoration: InputDecoration(labelText: 'كلمة المرور', prefixIcon: Icon(Icons.lock))),
+                        SizedBox(height: 30),
+                        SizedBox(width: double.infinity, child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade900, foregroundColor: Colors.white),
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => Dashboard())),
+                          child: Text('دخول للنظام'),
+                        ))
+                      ])))
+                  ])))
+                ]),
               );
             }
           }" > lib/screens/login.dart
 
-          # إنشاء لوحة التحكم (المعلم البديل + الدروس)
+          # 3. لوحة التحكم العالمية (المعلم البديل والمزامنة)
           echo "import 'package:flutter/material.dart';
           class Dashboard extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return Scaffold(
-                appBar: AppBar(title: Text('نظام منارة الأجيال الرقمي')),
-                bottomNavigationBar: BottomNavigationBar(items: [
-                  BottomNavigationBarItem(icon: Icon(Icons.school), label: 'الدروس'),
-                  BottomNavigationBarItem(icon: Icon(Icons.psychology), label: 'المعلم البديل'),
-                  BottomNavigationBarItem(icon: Icon(Icons.sync), label: 'المزامنة'),
-                ]),
-                body: GridView.count(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.all(15),
-                  children: [
-                    _buildCard('المكتبة الذكية (JSON)', Icons.menu_book),
-                    _buildCard('الذكاء الاصطناعي', Icons.auto_awesome),
-                    _buildCard('جدول المدرسة', Icons.table_chart),
-                    _buildCard('التواصل الإنساني', Icons.chat),
-                  ],
-                ),
+                appBar: AppBar(title: Text('لوحة تحكم أدلك الذكية'), centerTitle: true),
+                body: Padding(padding: EdgeInsets.all(15), child: GridView.count(crossAxisCount: 2, crossAxisSpacing: 15, mainAxisSpacing: 15, children: [
+                  _item(context, 'الدروس الذكية (JSON)', Icons.library_books, Colors.orange),
+                  _item(context, 'المعلم البديل AI', Icons.psychology, Colors.purple),
+                  _item(context, 'المزامنة (أوفلاين)', Icons.cloud_sync, Colors.green),
+                  _item(context, 'تقارير الأداء', Icons.analytics, Colors.blue),
+                ])),
+                bottomNavigationBar: BottomAppBar(child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  Icon(Icons.home, color: Colors.blue), Icon(Icons.search), Icon(Icons.settings)
+                ])),
               );
             }
-            Widget _buildCard(String title, IconData icon) {
-              return Card(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Icon(icon, size: 50, color: Colors.blue), Text(title)],
-                ),
-              );
+            Widget _item(BuildContext ctx, String t, IconData i, Color c) {
+              return InkWell(onTap: () {}, child: Container(
+                decoration: BoxDecoration(color: c.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: c)),
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(i, size: 45, color: c), SizedBox(height: 10), Text(t, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))]),
+              ));
             }
           }" > lib/screens/dashboard.dart
 
@@ -106,9 +95,9 @@ jobs:
           flutter pub get
           flutter build apk --release
 
-      - name: Upload Result
-        uses: actions/upload-artifact@v3
+      - name: Upload World-Class APK
+        uses: actions/upload-artifact@v4 # التحديث للنسخة الرابعة لحل المشكلة
         with:
-          name: Edluk-Pro-Release
+          name: Edluk-Final-MVP
           path: build/app/outputs/flutter-apk/app-release.apk
           
