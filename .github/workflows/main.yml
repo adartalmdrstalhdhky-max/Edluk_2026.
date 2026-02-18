@@ -1,137 +1,178 @@
-name: Edluk Ultimate Fixed System
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
-      
-      - name: Build Real Functional School System
-        run: |
-          flutter create --project-name edluk_app --org com.essam.edluk .
-          cat <<EOF > lib/main.dart
-          import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-          void main() => runApp(MaterialApp(
-            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.amber, brightness: Brightness.dark),
-            home: EdlukCoreSystem(),
-            debugShowCheckedModeBanner: false,
-          ));
+void main() {
+  runApp(ManarAlAjyalApp());
+}
 
-          class EdlukCoreSystem extends StatefulWidget {
-            @override
-            _EdlukCoreSystemState createState() => _EdlukCoreSystemState();
-          }
+class ManarAlAjyalApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'منارة الأجيال الرقمية',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        fontFamily: 'Arial', // يفضل استخدام خط يدعم العربية
+      ),
+      home: Directionality(
+        textDirection: TextDirection.rtl,
+        child: HomeScreen(),
+      ),
+    );
+  }
+}
 
-          class _EdlukCoreSystemState extends State<EdlukCoreSystem> {
-            int _index = 0;
-            // بيانات حقيقية داخل النظام (شغالة فعلياً)
-            List<String> classes = ["الصف الأول (أ)", "الصف الثاني (ب)"];
-            int score = 0;
-            bool isDone = false;
+class HomeScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> subjects = [
+    {'name': 'الرياضيات', 'icon': Icons.calculate, 'color': Colors.blue},
+    {'name': 'العلوم', 'icon': Icons.science, 'color': Colors.green},
+    {'name': 'اللغة العربية', 'icon': Icons.book, 'color': Colors.red},
+  ];
 
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text('نظام أدلك السيادي V2', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber)),
-                  backgroundColor: Colors.black,
-                  centerTitle: true,
-                ),
-                body: _getPages()[_index],
-                bottomNavigationBar: NavigationBar(
-                  selectedIndex: _index,
-                  onDestinationSelected: (i) => setState(() => _index = i),
-                  destinations: [
-                    NavigationDestination(icon: Icon(Icons.admin_panel_settings), label: 'الإدارة'),
-                    NavigationDestination(icon: Icon(Icons.menu_book), label: 'الأكاديمية'),
-                    NavigationDestination(icon: Icon(Icons.analytics), label: 'النتائج'),
-                  ],
-                ),
-              );
-            }
-
-            List<Widget> _getPages() {
-              return [
-                _adminSection(),
-                _studentSection(),
-                _resultSection(),
-              ];
-            }
-
-            // 1. نظام الإدارة (إضافة بيانات حقيقية تظهر فوراً)
-            Widget _adminSection() {
-              return ListView(
-                padding: EdgeInsets.all(20),
-                children: [
-                  Text('مركز إدارة المدرسة - القائد عصام', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.add_business),
-                    label: Text('إضافة صف دراسي حقيقي للقاعدة'),
-                    onPressed: () {
-                      setState(() { classes.add("صف جديد رقم \${classes.length + 1}"); });
-                    },
-                  ),
-                  Divider(height: 40),
-                  ...classes.map((c) => Card(child: ListTile(leading: Icon(Icons.school, color: Colors.amber), title: Text(c), subtitle: Text('الحالة: يعمل محلياً ✅')))),
-                ],
-              );
-            }
-
-            // 2. نظام الدروس والاختبارات (تفاعل حقيقي للمصادقية)
-            Widget _studentSection() {
-              return SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                children: [
-                  Text('أكاديمية الطالب: المنهج الرقمي', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(15)),
-                    child: Text('المعلم البديل: نظام أدلك يهدف لنشر العلم في كل بيت يمني. هل أنت جاهز لاختبار اليوم؟'),
-                  ),
-                  if (!isDone) ...[
-                    Text('سؤال: هل يمكن للنظام العمل بدون إنترنت؟'),
-                    SizedBox(height: 10),
-                    ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.green), onPressed: () => setState(() { score = 100; isDone = true; }), child: Text('نعم (إجابة صحيحة)', style: TextStyle(color: Colors.white))),
-                    SizedBox(height: 10),
-                    ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: Colors.red), onPressed: () => setState(() { score = 0; isDone = true; }), child: Text('لا (إجابة خاطئة)', style: TextStyle(color: Colors.white))),
-                  ] else 
-                    Center(child: Text('تم إنهاء الاختبار وتسجيل النتيجة ✅', style: TextStyle(color: Colors.amber, fontSize: 18))),
-                ],
-              );
-            }
-
-            // 3. نظام تتبع النتائج (إثبات أن التطبيق يخزن البيانات)
-            Widget _resultSection() {
-              return Center(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('تطبيق ادلك التعليمي'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: subjects.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () {
+                if (subjects[index]['name'] == 'الرياضيات') {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MathLessonsScreen()));
+                }
+              },
+              child: Card(
+                color: subjects[index]['color'],
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.stars, size: 100, color: Colors.amber),
-                    Text('مستوى تقدم الطالب الحالي', style: TextStyle(fontSize: 20)),
-                    Text('%\$score', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Colors.amber)),
-                    Padding(padding: EdgeInsets.all(40), child: LinearProgressIndicator(value: score / 100, minHeight: 10)),
-                    Text('بيانات حقيقية مستخرجة من ذاكرة النظام المحلية'),
+                    Icon(subjects[index]['icon'], size: 50, color: Colors.white),
+                    SizedBox(height: 10),
+                    Text(subjects[index]['name'], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                   ],
                 ),
-              );
-            }
-          }
-          EOF
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
-      - name: Build Corrected APK
-        run: |
-          flutter pub get
-          flutter build apk --release
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: edluk-sovereign-fixed
-          path: build/app/outputs/flutter-apk/app-release.apk
-          
+class MathLessonsScreen extends StatelessWidget {
+  final List<String> lessons = ['الجمع والطرح', 'الضرب والقسمة', 'الأشكال الهندسية'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('دروس الرياضيات')),
+      body: ListView.builder(
+        itemCount: lessons.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: CircleAvatar(child: Text('${index + 1}')),
+            title: Text(lessons[index]),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(lessonName: lessons[index])));
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class QuizScreen extends StatefulWidget {
+  final String lessonName;
+  QuizScreen({required this.lessonName});
+
+  @override
+  _QuizScreenState createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  int currentQuestionIndex = 0;
+  int score = 0;
+
+  final List<Map<String, dynamic>> questions = [
+    {
+      'question': 'ما هو ناتج 5 + 7؟',
+      'answers': ['10', '12', '13', '15'],
+      'correct': 1,
+    },
+    {
+      'question': 'ما هو ناتج 10 - 4؟',
+      'answers': ['5', '6', '7', '8'],
+      'correct': 1,
+    },
+  ];
+
+  void checkAnswer(int index) {
+    if (index == questions[currentQuestionIndex]['correct']) {
+      score++;
+    }
+
+    setState(() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('انتهى الاختبار'),
+            content: Text('درجتك هي $score من ${questions.length}'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text('إغلاق'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('اختبار: ${widget.lessonName}')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'السؤال ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex]['question']}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            ...(questions[currentQuestionIndex]['answers'] as List<String>).asMap().entries.map((entry) {
+              return ElevatedButton(
+                onPressed: () => checkAnswer(entry.key),
+                child: Text(entry.value),
+                style: ElevatedButton.styleFrom(margin: EdgeInsets.symmetric(vertical: 5)),
+              );
+            }).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
