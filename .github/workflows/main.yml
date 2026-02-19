@@ -1,4 +1,4 @@
-name: Edluk Professional Architecture Build
+name: Edluk Full System Auto-Build
 
 on:
   push:
@@ -15,39 +15,54 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
-      - name: Create Clean Architecture Folders
+      - name: Initialize Edluk Project From Scratch
         run: |
-          # إنشاء الهيكل المنظم للمشروع لضمان عدم الخبطة
-          mkdir -p lib/core/sync       # للنخاع الشوكي (المزامنة)
-          mkdir -p lib/data/models     # للبيانات والدروس JSON
-          mkdir -p lib/domain/entities  # للقواعد الأساسية
-          mkdir -p lib/presentation/screens # للواجهات والمعلم الذكي
+          # 1. إنشاء مشروع فلاتر جديد في المجلد الحالي لملء الفراغ
+          flutter create . --force --offline
           
-          # إنشاء ملف المزامنة الأساسي (النخاع الشوكي)
-          echo "class SyncEngine { void syncData() { print('Starting Sync...'); } }" > lib/core/sync/sync_engine.dart
+          # 2. إنشاء الهيكل المنظم (النخاع الشوكي)
+          mkdir -p lib/core/sync
+          mkdir -p lib/data/models
+          mkdir -p lib/presentation/screens
           
-          # إنشاء الواجهة الرئيسية المنظمة
+          # 3. إنشاء محرك المزامنة الأساسي (Sync Engine)
+          echo "class SyncEngine { 
+            // هذا هو النخاع الشوكي للمزامنة بدون إنترنت
+            void startSync() { print('Syncing with Offline-First Strategy...'); } 
+          }" > lib/core/sync/sync_engine.dart
+
+          # 4. تحديث الواجهة الرئيسية (Main UI)
           echo "import 'package:flutter/material.dart';
-          void main() => runApp(EdlukApp());
-          class EdlukApp extends StatelessWidget {
+          void main() => runApp(EdlukPro());
+          class EdlukPro extends StatelessWidget {
             @override
             Widget build(BuildContext context) {
               return MaterialApp(
-                title: 'نظام إدلك الذكي',
-                theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
-                home: Scaffold(appBar: AppBar(title: Text('منارة الأجيال - الإصدار الأول'))),
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+                home: Scaffold(
+                  appBar: AppBar(title: Text('إصدار إدلك التجريبي v1.0')),
+                  body: Center(child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.auto_awesome, size: 100, color: Colors.blue),
+                      Text('نظام منارة الأجيال الرقمية', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text('الاختراع التعليمي الأول في اليمن'),
+                    ],
+                  )),
+                ),
               );
             }
           }" > lib/main.dart
 
-      - name: Build APK
+      - name: Build Android APK
         run: |
           flutter pub get
           flutter build apk --release
 
-      - name: Upload Organized APK
+      - name: Upload Edluk APK
         uses: actions/upload-artifact@v4
         with:
-          name: Edluk-Organized-Release
+          name: Edluk-Invention-v1
           path: build/app/outputs/flutter-apk/app-release.apk
           
