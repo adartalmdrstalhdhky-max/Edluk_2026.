@@ -1,178 +1,53 @@
-import 'package:flutter/material.dart';
+name: Edluk Professional Architecture Build
 
-void main() {
-  runApp(ManarAlAjyalApp());
-}
+on:
+  push:
+    branches: [ main ]
 
-class ManarAlAjyalApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'منارة الأجيال الرقمية',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        fontFamily: 'Arial', // يفضل استخدام خط يدعم العربية
-      ),
-      home: Directionality(
-        textDirection: TextDirection.rtl,
-        child: HomeScreen(),
-      ),
-    );
-  }
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-class HomeScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> subjects = [
-    {'name': 'الرياضيات', 'icon': Icons.calculate, 'color': Colors.blue},
-    {'name': 'العلوم', 'icon': Icons.science, 'color': Colors.green},
-    {'name': 'اللغة العربية', 'icon': Icons.book, 'color': Colors.red},
-  ];
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('تطبيق ادلك التعليمي'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: subjects.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                if (subjects[index]['name'] == 'الرياضيات') {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => MathLessonsScreen()));
-                }
-              },
-              child: Card(
-                color: subjects[index]['color'],
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(subjects[index]['icon'], size: 50, color: Colors.white),
-                    SizedBox(height: 10),
-                    Text(subjects[index]['name'], style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class MathLessonsScreen extends StatelessWidget {
-  final List<String> lessons = ['الجمع والطرح', 'الضرب والقسمة', 'الأشكال الهندسية'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('دروس الرياضيات')),
-      body: ListView.builder(
-        itemCount: lessons.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: CircleAvatar(child: Text('${index + 1}')),
-            title: Text(lessons[index]),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(lessonName: lessons[index])));
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class QuizScreen extends StatefulWidget {
-  final String lessonName;
-  QuizScreen({required this.lessonName});
-
-  @override
-  _QuizScreenState createState() => _QuizScreenState();
-}
-
-class _QuizScreenState extends State<QuizScreen> {
-  int currentQuestionIndex = 0;
-  int score = 0;
-
-  final List<Map<String, dynamic>> questions = [
-    {
-      'question': 'ما هو ناتج 5 + 7؟',
-      'answers': ['10', '12', '13', '15'],
-      'correct': 1,
-    },
-    {
-      'question': 'ما هو ناتج 10 - 4؟',
-      'answers': ['5', '6', '7', '8'],
-      'correct': 1,
-    },
-  ];
-
-  void checkAnswer(int index) {
-    if (index == questions[currentQuestionIndex]['correct']) {
-      score++;
-    }
-
-    setState(() {
-      if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('انتهى الاختبار'),
-            content: Text('درجتك هي $score من ${questions.length}'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: Text('إغلاق'),
-              ),
-            ],
-          ),
-        );
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('اختبار: ${widget.lessonName}')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'السؤال ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex]['question']}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 30),
-            ...(questions[currentQuestionIndex]['answers'] as List<String>).asMap().entries.map((entry) {
-              return ElevatedButton(
-                onPressed: () => checkAnswer(entry.key),
-                child: Text(entry.value),
-                style: ElevatedButton.styleFrom(margin: EdgeInsets.symmetric(vertical: 5)),
+      - name: Create Clean Architecture Folders
+        run: |
+          # إنشاء الهيكل المنظم للمشروع لضمان عدم الخبطة
+          mkdir -p lib/core/sync       # للنخاع الشوكي (المزامنة)
+          mkdir -p lib/data/models     # للبيانات والدروس JSON
+          mkdir -p lib/domain/entities  # للقواعد الأساسية
+          mkdir -p lib/presentation/screens # للواجهات والمعلم الذكي
+          
+          # إنشاء ملف المزامنة الأساسي (النخاع الشوكي)
+          echo "class SyncEngine { void syncData() { print('Starting Sync...'); } }" > lib/core/sync/sync_engine.dart
+          
+          # إنشاء الواجهة الرئيسية المنظمة
+          echo "import 'package:flutter/material.dart';
+          void main() => runApp(EdlukApp());
+          class EdlukApp extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return MaterialApp(
+                title: 'نظام إدلك الذكي',
+                theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
+                home: Scaffold(appBar: AppBar(title: Text('منارة الأجيال - الإصدار الأول'))),
               );
-            }).toList(),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            }
+          }" > lib/main.dart
+
+      - name: Build APK
+        run: |
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload Organized APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Edluk-Organized-Release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          
