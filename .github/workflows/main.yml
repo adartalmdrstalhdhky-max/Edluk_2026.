@@ -1,4 +1,4 @@
-name: Edluk Full System Auto-Build
+name: Edluk Zero-to-Hero Build
 
 on:
   push:
@@ -15,54 +15,41 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
-      - name: Initialize Edluk Project From Scratch
+      - name: Force Create Project Files
         run: |
-          # 1. إنشاء مشروع فلاتر جديد في المجلد الحالي لملء الفراغ
-          flutter create . --force --offline
+          # إنشاء ملف الإعدادات يدوياً لضمان عدم فشل البناء
+          echo "name: edluk_pro" > pubspec.yaml
+          echo "description: Edluk Smart School System" >> pubspec.yaml
+          echo "publish_to: 'none'" >> pubspec.yaml
+          echo "version: 1.0.0+1" >> pubspec.yaml
+          echo "environment:" >> pubspec.yaml
+          echo "  sdk: '>=3.2.0 <4.0.0'" >> pubspec.yaml
+          echo "dependencies:" >> pubspec.yaml
+          echo "  flutter:" >> pubspec.yaml
+          echo "    sdk: flutter" >> pubspec.yaml
+          echo "flutter:" >> pubspec.yaml
+          echo "  uses-material-design: true" >> pubspec.yaml
           
-          # 2. إنشاء الهيكل المنظم (النخاع الشوكي)
+          # إنشاء المجلدات الأساسية
           mkdir -p lib/core/sync
-          mkdir -p lib/data/models
           mkdir -p lib/presentation/screens
           
-          # 3. إنشاء محرك المزامنة الأساسي (Sync Engine)
-          echo "class SyncEngine { 
-            // هذا هو النخاع الشوكي للمزامنة بدون إنترنت
-            void startSync() { print('Syncing with Offline-First Strategy...'); } 
-          }" > lib/core/sync/sync_engine.dart
-
-          # 4. تحديث الواجهة الرئيسية (Main UI)
+          # إنشاء ملف التشغيل الرئيسي
           echo "import 'package:flutter/material.dart';
-          void main() => runApp(EdlukPro());
-          class EdlukPro extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
-                home: Scaffold(
-                  appBar: AppBar(title: Text('إصدار إدلك التجريبي v1.0')),
-                  body: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.auto_awesome, size: 100, color: Colors.blue),
-                      Text('نظام منارة الأجيال الرقمية', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                      Text('الاختراع التعليمي الأول في اليمن'),
-                    ],
-                  )),
-                ),
-              );
-            }
-          }" > lib/main.dart
+          void main() => runApp(MaterialApp(
+            home: Scaffold(
+              body: Center(child: Text('EDLUK SMART SYSTEM READY')),
+            ),
+          ));" > lib/main.dart
 
       - name: Build Android APK
         run: |
           flutter pub get
           flutter build apk --release
 
-      - name: Upload Edluk APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Edluk-Invention-v1
+          name: Edluk-V1
           path: build/app/outputs/flutter-apk/app-release.apk
           
