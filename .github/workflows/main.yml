@@ -1,12 +1,14 @@
-name: Edluk Infrastructure Auto-Creator
+name: Fill Repository with Infrastructure
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  initialize:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -15,49 +17,21 @@ jobs:
         with:
           flutter-version: '3.19.0'
 
-      - name: Create Full Flutter Project
+      - name: Inject Full Project Files
         run: |
-          # حذف أي ملفات قديمة لتجنب التعارض
-          rm -rf * # إنشاء مشروع كامل من الصفر (هذا سيوفر مجلد android و gradle)
+          # إنشاء مشروع كامل لملء الفراغ
           flutter create . --project-name edluk_pro --offline
           
-          # الآن نقوم بحقن "النخاع الشوكي" والهيكل المنظم داخل المشروع المنشأ
+          # إعداد الهيكل المنظم للهوية الجديدة
           mkdir -p lib/core/sync
-          mkdir -p lib/presentation/screens
+          echo "class SyncEngine { void start() { print('Core Active'); } }" > lib/core/sync/sync_engine.dart
+
+          # تهيئة إعدادات Git للرفع
+          git config --global user.name "Gemini-Partner"
+          git config --global user.email "bot@edluk.com"
           
-          # إنشاء محرك المزامنة (الاختراع الأساسي)
-          echo "class SyncEngine { void init() { print('Offline-First Sync Started'); } }" > lib/core/sync/sync_engine.dart
-
-          # وضع واجهة التطبيق الرئيسية (المعلم الذكي)
-          echo "import 'package:flutter/material.dart';
-          void main() => runApp(MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
-            home: Scaffold(
-              appBar: AppBar(title: Text('نظام إدلك الذكي v1')),
-              body: Center(child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.bolt, size: 80, color: Colors.amber),
-                  Text('تم بناء الهيكل بنجاح', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text('المستودع كان فارغاً، والآن النظام يعمل بنجاح من الصفر.', textAlign: TextAlign.center),
-                  ),
-                ],
-              )),
-            ),
-          ));" > lib/main.dart
-
-      - name: Build Android APK
-        run: |
-          # جلب المكتبات وبناء التطبيق
-          flutter pub get
-          flutter build apk --release --no-tree-shake-icons
-
-      - name: Upload Finished APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Edluk-Final-Build
-          path: build/app/outputs/flutter-apk/app-release.apk
+          # رفع الملفات الحقيقية للمستودع لأول مرة
+          git add .
+          git commit -m "إضافة البنية التحتية الكاملة للمشروع - منارة الأجيال"
+          git push
           
